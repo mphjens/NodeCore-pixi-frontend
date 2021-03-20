@@ -4,7 +4,7 @@
     "target": "es2015",
     "declaration": true,
     "sourceMap": true,  
-    "outDir": "./dist",
+    "outDir": "./ts-out",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

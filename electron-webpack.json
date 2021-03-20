@@ -1,0 +1,11 @@
+{
+    //"title": "Electron-webpack.json title",
+    "main": {
+      "sourceDirectory": "./ts-out"
+    },
+    "renderer": {
+      "sourceDirectory": "./electron-src/renderer",
+      "template": "./electron-src/renderer/index.html"
+    }
+  
+}
