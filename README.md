@@ -1,19 +1,15 @@
-# Pixi + Webpack + TypeScript
-TODO: LOOK AT THIS  https://github.com/Mkalo/electron-pixijs-typescript
-A "ready to dev" environment to work with PIXI.js, webpack & typescript for web oriented games/projects. Use it as a seed to begin a new project.
+# electron-pixijs-typescript
+Sample using Electron, Pixi.JS and TypeScript to make a game app that runs on browser and on desktop.
 
-## Launch it
+How to use it:
+```
+git clone https://github.com/Mkalo/electron-pixijs-typescript.git
+cd electron-pixijs-typescript
+npm install
+npm run build
+npm start
+```
 
-Prerequisite:
-* run `npm i` before first start
+You can also build your app to work on a web browser using `npm run web`.
 
-Run (dev): `npm start` then browse http://localhost:8080/ with Firefox or Chrome
-Build (prod): `npm run build` then use freshly generated "dist" 
-## More infos
-
-Current Pixi version: Release v5.3.7
-
-Last NPM full update: 2021-01
-
-Licences: [CC-BY-NC-4.0](https://creativecommons.org/licenses/by-nc/4.0/): you can use/copy/modify any code but only without commercial intentions.
-
+![](http://i.imgur.com/0orxT3a.png)
