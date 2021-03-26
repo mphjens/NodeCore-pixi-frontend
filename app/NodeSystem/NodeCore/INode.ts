@@ -99,7 +99,6 @@ export abstract class INode {
 
 	//Evaluate all the output values and mark them valid
 	//do this by recursively evaluating non valid input nodes
-	//
 	public EvaluateNode(): void {
 		//Recursively evaluate invalid input nodes
 		let invalidInputs: NodePort[] = this.GetInvalidInputs();

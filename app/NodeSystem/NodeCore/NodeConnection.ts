@@ -24,10 +24,10 @@ export class NodeConnection{
 		this.PortIndexB = PortIndexB;
 
 		let outPort = this.NodeA.GetOutput(this.PortIndexA);
-		outPort.isValid = false;
+		//outPort.isValid = false;
 
 		let inPort = this.NodeB.GetInput(this.PortIndexB);
-		inPort.isValid = false;
+		inPort.isValid = false; //Will make it so value will be updated on next evaluation
 
 	}
 
@@ -35,11 +35,11 @@ export class NodeConnection{
 	{
 		let outPort = this.NodeA.GetOutput(this.PortIndexA);
 		outPort.connection = null;
-		outPort.isValid = false;
 
 		let inPort = this.NodeB.GetInput(this.PortIndexB);
 		inPort.connection = null;
 		inPort.isValid = false;
+		inPort.value = null;
 	}
 
 }
