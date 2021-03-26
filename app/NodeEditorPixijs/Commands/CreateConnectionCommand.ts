@@ -11,6 +11,7 @@ export class CreateConnectionCommand extends IUpdateableEditorCommand{
     startPort : RenderableNodePort; //Nodeport we're connecting from
     endPort: RenderableNodePort;    //Nodeport we connected to
 
+    createdConnection: NodeConnection;
     oldConnection: NodeConnection; //previously connection (so we can connect it again in the undo)
 
     tmpLineObj: Graphics;
@@ -46,6 +47,9 @@ export class CreateConnectionCommand extends IUpdateableEditorCommand{
                 if(item instanceof RenderableNodePort)
                 {
                     let cPort:RenderableNodePort = item;
+                    //TODO: URGENT IMPLEMENT FROM INPUT TO OUTPUT
+                    // maybe swap endPort and startPort if we're connecting an input to an output
+                    // also check if we're not connecting it to the same node (this should be enforced in NodeSystem code aswel)
                     if(this.startPort._port.portType == PortType.output && cPort._port.portType == PortType.input)
                     {
                         this.endPort = cPort;
@@ -54,7 +58,6 @@ export class CreateConnectionCommand extends IUpdateableEditorCommand{
             });
         }
 
-        //TODO: URGENT IMPLEMENT FROM INPUT TO OUTPUT
         if(this.endPort != null){
             this.oldConnection = null;
             if(this.endPort._port.connection != null)
@@ -62,7 +65,7 @@ export class CreateConnectionCommand extends IUpdateableEditorCommand{
                 this.oldConnection = this.endPort._port.connection;
             }
 
-            this.startPort.parentNode._node.Connect(this.startPort._port.index, this.endPort._port.index, this.endPort.parentNode._node);
+            this.createdConnection = this.startPort.parentNode._node.Connect(this.startPort._port.index, this.endPort._port.index, this.endPort.parentNode._node);
             
             this.startPort.parentNode.UpdateConnections();
 
@@ -70,6 +73,15 @@ export class CreateConnectionCommand extends IUpdateableEditorCommand{
                 ctx.GetNodeById(this.oldConnection.NodeA.index).UpdateConnections();//also update the previously connected node to remove the old connection
             }
             
+        } else{
+            if(this.startPort._port.connection != null)
+            {
+                this.oldConnection = this.startPort._port.connection;
+
+                let rNode: RenderableNode = ctx.GetNodeById(this.startPort._port.connection.NodeA.index);
+                this.startPort._port.connection.Disconnect();
+                rNode.UpdateConnections();
+            }
         }
         
 
@@ -77,14 +89,22 @@ export class CreateConnectionCommand extends IUpdateableEditorCommand{
         ctx.removeChild(this.tmpLineObj);
     }
     public undo(ctx: NodeGraphEditor): void {
-        if(this.endPort != null && this.startPort != null)
-        {
+        
+        //If we've overwritten a connection
+        if(this.oldConnection != null){
+            //Reset the old connection, this overwrites the createdConnection so we don't need to disconnect it
             this.oldConnection.NodeA.Connect(this.oldConnection.PortIndexA, this.oldConnection.PortIndexB, this.oldConnection.NodeB);
-
             ctx.GetNodeById(this.oldConnection.NodeA.index).UpdateConnections();
-            this.startPort.parentNode.UpdateConnections();
-            this.endPort.parentNode.UpdateConnections();
+            
+        }else{
+            this.createdConnection.Disconnect();
         }
+
+        this.startPort.parentNode.UpdateConnections();
+        
+        if(this.endPort != null)
+            this.endPort.parentNode.UpdateConnections();    
+        
     }
 
 }

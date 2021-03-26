@@ -63,6 +63,7 @@ export abstract class GraphEditorItem extends Graphics {
 
 
     public abstract Redraw(): void;
+    //TODO: Implement this system, we can't remove the nodeports/connections when we remove a node now.
     //public abstract Destruct(): void; //When removed from editor
     //public abstract Restore(): void; //When readded afer remove
     protected abstract onSelected(): void;

@@ -38,7 +38,7 @@ export class RenderableNodeConnection extends GraphEditorItem {
         let startOffset = rNodeA.GetOutputPosition(this._nodeCon.PortIndexA);
         let globalStartPosition = new Point(rNodeA.x + startOffset.x, rNodeA.y + startOffset.y + (rNodeA.PortSize / 2));
 
-        this.x = globalStartPosition.x;
+        this.x = globalStartPosition.x + (rNodeA.PortSize/2);
         this.y = globalStartPosition.y;
 
         let rNodeB: RenderableNode = this.editor.GetNodeById(this._nodeCon.NodeB.index);

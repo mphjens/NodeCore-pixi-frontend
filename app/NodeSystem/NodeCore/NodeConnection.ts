@@ -18,9 +18,28 @@ export class NodeConnection{
 
 	constructor(nodeA: INode, PortIndexA:number, NodeB: INode, PortIndexB: number){
 		this.NodeA = nodeA;
-		this.NodeB = NodeB;
 		this.PortIndexA = PortIndexA;
+
+		this.NodeB = NodeB;
 		this.PortIndexB = PortIndexB;
+
+		let outPort = this.NodeA.GetOutput(this.PortIndexA);
+		outPort.isValid = false;
+
+		let inPort = this.NodeB.GetInput(this.PortIndexB);
+		inPort.isValid = false;
+
+	}
+
+	public Disconnect()
+	{
+		let outPort = this.NodeA.GetOutput(this.PortIndexA);
+		outPort.connection = null;
+		outPort.isValid = false;
+
+		let inPort = this.NodeB.GetInput(this.PortIndexB);
+		inPort.connection = null;
+		inPort.isValid = false;
 	}
 
 }

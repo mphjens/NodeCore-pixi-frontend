@@ -138,6 +138,18 @@ export class NodeGraphEditor extends Container {
             case "Delete":
                 this.FinishCommand(new RemoveEditorItemCommand(this.selection));
                 break;
+            case "Enter":
+            case "NumpadEnter":
+                //TODO: REMOVE THIS DEBUG CODE
+                let items = this.GetItemsAtPosition(this.cMousePosition.x, this.cMousePosition.y);
+                items.forEach(item=>{
+                    if(item instanceof RenderableNode)
+                    {
+                        item._node.EvaluateNode();
+                        console.log(`${item._node.getName()}[0]`, item._node.GetOutput(0).value);
+                    }
+                });
+            break;
         }
     }
 
@@ -246,6 +258,7 @@ export class NodeGraphEditor extends Container {
         }
     }
 
+    //Not sure if we should keep the NodeGraph in the NodeEditor
     public GetNodeById(node_id: number) {
         return this.nodeIdItemMap.get(node_id);
     }

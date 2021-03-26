@@ -34,11 +34,9 @@ export class SelectItemCommand extends IEditorCommand {
                         if (item.isSelected()) {
                             let index = ctx.selection.indexOf(item);
                             ctx.selection[index].Deselect();
-                            //ctx.selection.splice(index, 1);
                         }
                         else {
                             item.Select();
-                            //ctx.selection.push(item)
                         }
                     }
                 });
@@ -88,8 +86,6 @@ export class SelectItemCommand extends IEditorCommand {
             }
         });
 
-
-        //ctx.selection = this.orgSelection;
     }
 
 }
