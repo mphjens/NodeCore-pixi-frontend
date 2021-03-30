@@ -33,7 +33,11 @@ export class CreateConnectionCommand extends IUpdateableEditorCommand{
         this.tmpLineObj.y = this.startPort.y;
         this.tmpLineObj.clear();
         this.tmpLineObj.lineStyle(2, 0x00ff00);
-        this.tmpLineObj.lineTo(ctx.cMousePosition.x - this.tmpLineObj.x, ctx.cMousePosition.y - this.tmpLineObj.y);
+
+        let endX = ctx.cMousePosition.x - this.tmpLineObj.x;
+        let endY = ctx.cMousePosition.y - this.tmpLineObj.y
+        this.tmpLineObj.bezierCurveTo(endX/2, 0, endX/2, endY, endX, endY);
+        //this.tmpLineObj.lineTo(ctx.cMousePosition.x - this.tmpLineObj.x, ctx.cMousePosition.y - this.tmpLineObj.y);
     }
     public cancel(ctx: NodeGraphEditor): void {
         

@@ -44,10 +44,10 @@ export class RenderableNodeConnection extends GraphEditorItem {
         let rNodeB: RenderableNode = this.editor.GetNodeById(this._nodeCon.NodeB.index);
         let endOffset = rNodeB.GetInputPosition(this._nodeCon.PortIndexB);
         let globalEndPosition = new Point(rNodeB.x + endOffset.x, rNodeB.y + endOffset.y + (rNodeB.PortSize / 2));
-        let endposition = this.toLocal(globalEndPosition);
+        let endposition = this.toLocal(globalEndPosition, this.editor);
 
         this.lineStyle(this.lineWidth, this.color, 1);
-        this.quadraticCurveTo(0, 0, endposition.x, endposition.y);
+        this.bezierCurveTo(endposition.x, 0, 0, endposition.y, endposition.x, endposition.y);
 
     }
 
