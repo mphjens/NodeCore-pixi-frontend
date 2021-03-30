@@ -23,13 +23,14 @@ export class NodeGraphEditor extends Container {
     private commandstack: IEditorCommand[]; //The 'undo stack'
     private executingCommand: IUpdateableEditorCommand = null;
 
-    public mouseIsDown: boolean; //might be nice to not have these public
     public mouseDownPos: Point = new Point(); //might be nice to not have these public
     public cMousePosition: Point = new Point(); //might be nice to not have these public
     public shiftIsDown: boolean; //might be nice to not have these public
     public ctrlIsDown: boolean; //might be nice to not have these public
 
     public selection: GraphEditorItem[]; //This is altered by SelectItemCommand.ts, might be nicer to use methods instead of making this public.
+
+    public AvailableNodePrototypes: typeof INode[] = [];
 
     constructor(graph: NodeGraph) {
         super();
@@ -165,7 +166,6 @@ export class NodeGraphEditor extends Container {
     }
 
     public onWindowPointerDown(eventdata: InteractionEvent) {
-        this.mouseIsDown = true;
         this.cMousePosition = eventdata.data.global.clone();
         this.mouseDownPos.x = eventdata.data.global.x;
         this.mouseDownPos.y = eventdata.data.global.y;
@@ -188,7 +188,6 @@ export class NodeGraphEditor extends Container {
     }
 
     public onWindowPointerUp(eventdata: InteractionEvent) {
-        this.mouseIsDown = false;
 
         if(this.executingCommand != null)
         {
