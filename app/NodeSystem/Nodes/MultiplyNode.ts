@@ -16,7 +16,7 @@ export class MultiplyNode extends INode{
 				{Name: "O", Type: InterfaceType.output, ValueType: InterfaceValueType.number}
 			]
 		}
-		super(cfg, graph);
+		super(graph, cfg);
 	}	
 
 	protected GetValue(outPortNumber: number) : any {

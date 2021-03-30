@@ -15,7 +15,7 @@ export class ConstantNumberNode extends INode{
 				{Name: "O", Type: InterfaceType.output, ValueType: InterfaceValueType.number}
 			]
 		}
-		super(cfg, graph);
+		super(graph,cfg);
 
 		this.value = value;
 	}	

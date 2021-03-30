@@ -1,27 +1,35 @@
+import { NodeInfo } from "./NodeAttribute";
 import { NodeConfig, PortType } from "./NodeConfig";
 import { NodeConnection } from "./NodeConnection";
 import { NodeGraph } from "./NodeGraph";
 import { NodePort } from "./NodePort";
 
 export abstract class INode {
+    [x: string]: any; //TODO: Meh, added because we need to access NodeInfo
 	public graph: NodeGraph;
 	public index: number = -1;
-	protected cfg: NodeConfig;
+	public readonly cfg: NodeConfig;
 
 	private inputs: NodePort[];
 	private outputs: NodePort[];
 
-	constructor(config: NodeConfig, graph: NodeGraph) {
-		this.cfg = config;
+	constructor(graph: NodeGraph, config: NodeConfig = null ) {
+		if(config != null && this.cfg != null)
+			console.warn("Either pass the config as a constructor parameter or use the decorator, not both.");
+		
+		if(config != null)
+			this.cfg = config;
+
 		this.inputs = [];
 		this.outputs = [];
 
-		for (let i = 0; i < config.Inputs.length; i++) {
-			this.inputs[i] = new NodePort(i, PortType.input);
+		//no need to set size of array first??
+		for (let i = 0; i < this.cfg.Inputs.length; i++) {
+			this.inputs[i] = new NodePort(i, PortType.input, this.cfg.Inputs[i].ValueType);
 		}
 
-		for (let i = 0; i < config.Outputs.length; i++) {
-			this.outputs[i] = new NodePort(i, PortType.output);
+		for (let i = 0; i < this.cfg.Outputs.length; i++) {
+			this.outputs[i] = new NodePort(i, PortType.output, this.cfg.Outputs[i].ValueType);
 		}
 
 		if (graph != null)
@@ -68,6 +76,12 @@ export abstract class INode {
 			return null;
 		}
 
+		if(toNode.inputs[inPortNumber].valueType != this.outputs[outPortNumber].valueType)
+		{
+			console.error("Node types not compatible");
+			return null;
+		}
+
 		if (this.outputs[outPortNumber].connection != null) {
 			console.log("OVERRIDING OUT NODECONNECTION");
 			let oldCon = this.outputs[outPortNumber].connection;
@@ -80,7 +94,6 @@ export abstract class INode {
 			oldCon.NodeA.GetOutput(oldCon.PortIndexA).connection = null;
 			console.log("OVERRIDING IN NODECONNECTION");
 		}
-
 
 		let nConnection: NodeConnection = new NodeConnection(
 			this,

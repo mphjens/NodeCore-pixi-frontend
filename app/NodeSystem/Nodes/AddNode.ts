@@ -1,7 +1,15 @@
 // import { INode } from "../NodeCore/INode";
 // import { InterfaceType, InterfaceValueType, NodeConfig } from "../NodeCore/NodeConfig";
 import  {INode, InterfaceType, InterfaceValueType, NodeConfig, NodeGraph} from "../NodeCore";
+import { NodeInfo, PortProperty } from "../NodeCore/NodeAttribute";
 
+//TODO: Implement NodeAttribute.ts
+// @NodeInfo({
+// 	Name: "Add node",
+// 	Description: "Adds inputs together",
+// 	Inputs: [],
+// 	Outputs: []
+// })
 export class AddNode extends INode{
 	constructor(graph: NodeGraph)
 	{
@@ -16,8 +24,11 @@ export class AddNode extends INode{
 				{Name: "O", Type: InterfaceType.output, ValueType: InterfaceValueType.number}
 			]
 		}
-		super(cfg, graph);
+		super(graph, cfg);
 	}	
+
+	//@PortProperty({Name: "a", Type: InterfaceType.input, ValueType: InterfaceValueType.number})
+	//public a:number;
 
 	protected GetValue(outPortNumber: number) : any {
 		if(outPortNumber == 0){
