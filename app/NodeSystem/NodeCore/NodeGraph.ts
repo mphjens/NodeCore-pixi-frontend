@@ -1,12 +1,16 @@
+import { GraphSystemClock } from "./GraphSystemClock";
+import { IGraphClock } from "./IGraphClock";
 import { INode } from "./INode";
 
 export class NodeGraph{
+	public Clock: IGraphClock;
 	Nodes: INode[];
 	//Connections: NodeConnection[];
 	//Add some maps to efficently find connected nodes
 
 	constructor(){
 		this.Nodes = [];
+		this.Clock = new GraphSystemClock();
 	}
 
 	//Returns the index of this node

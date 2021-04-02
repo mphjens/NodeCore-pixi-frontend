@@ -1,11 +1,11 @@
-import { NodeInfo } from "./NodeAttribute";
+
 import { NodeConfig, PortType } from "./NodeConfig";
 import { NodeConnection } from "./NodeConnection";
 import { NodeGraph } from "./NodeGraph";
 import { NodePort } from "./NodePort";
 
 export abstract class INode {
-    [x: string]: any; //TODO: Meh, added because we need to access NodeInfo
+    //[x: string]: any; //TODO: Meh, added because we need to access NodeInfo
 	public graph: NodeGraph;
 	public index: number = -1;
 	public readonly cfg: NodeConfig;
@@ -25,11 +25,11 @@ export abstract class INode {
 
 		//no need to set size of array first??
 		for (let i = 0; i < this.cfg.Inputs.length; i++) {
-			this.inputs[i] = new NodePort(i, PortType.input, this.cfg.Inputs[i].ValueType);
+			this.inputs[i] = new NodePort(this, i, PortType.input, this.cfg.Inputs[i].ValueType);
 		}
 
 		for (let i = 0; i < this.cfg.Outputs.length; i++) {
-			this.outputs[i] = new NodePort(i, PortType.output, this.cfg.Outputs[i].ValueType);
+			this.outputs[i] = new NodePort(this, i, PortType.output, this.cfg.Outputs[i].ValueType);
 		}
 
 		if (graph != null)
@@ -41,7 +41,7 @@ export abstract class INode {
 		return this.cfg.Name;
 	}
 
-	public HasInvalidInputs(): boolean {
+	public HasDirtyInputs(): boolean {
 		for (let i = 0; i < this.inputs.length; i++) {
 			if (!this.inputs[i].isValid)
 				return true;
@@ -50,15 +50,15 @@ export abstract class INode {
 		return false;
 	}
 
-	public GetInvalidInputs(): NodePort[] {
-		let invalidPorts: NodePort[] = [];
+	public GetDirtyInputs(): NodePort[] {
+		let dirtyPorts: NodePort[] = [];
 		for (let i = 0; i < this.inputs.length; i++) {
 			let cInput: NodePort = this.GetInput(i);
 			if (!cInput.isValid)
-				invalidPorts.push(cInput)
+				dirtyPorts.push(cInput)
 		}
 
-		return invalidPorts;
+		return dirtyPorts;
 	}
 
 	public HasConnectedOuput(): boolean {
@@ -95,34 +95,33 @@ export abstract class INode {
 			console.log("OVERRIDING IN NODECONNECTION");
 		}
 
-		let nConnection: NodeConnection = new NodeConnection(
-			this,
-			outPortNumber,
-			toNode,
-			inPortNumber
-		);
 
-		this.outputs[outPortNumber].connection = nConnection;
-		toNode.inputs[inPortNumber].connection = nConnection;
-
-		//this.graph.Connections.push(nConnection);
-
-		return nConnection;
+		return this.outputs[outPortNumber].Connect(toNode.inputs[inPortNumber]);
 	}
 
 	//Evaluate all the output values and mark them valid
 	//do this by recursively evaluating non valid input nodes
-	public EvaluateNode(): void {
-		//Recursively evaluate invalid input nodes
-		let invalidInputs: NodePort[] = this.GetInvalidInputs();
-		while (invalidInputs.length > 0 && invalidInputs[0].connection != null && invalidInputs[0].connection.NodeA != null) {
-			invalidInputs[0].connection.NodeA.EvaluateNode(); //TODO: maybe selectively evaluate outputs. EvaluateNode() calculates all outputs (even when not connected).
+	public EvaluateNode(force:boolean = false): void {
+		if(force){
+			this.graph.Nodes.forEach(node=>{
+				node.GetOutputs().forEach(output=>{
+					output.isValid = false;
+				});
+				node.GetInputs().forEach(input=>{
+					input.isValid = false;
+				});
+			});
+		}
+		//Recursively evaluate dirty input nodes
+		let dirtyInputs: NodePort[] = this.GetDirtyInputs();
+		while (dirtyInputs.length > 0 && dirtyInputs[0].connection != null && dirtyInputs[0].connection.NodeA != null) {
+			dirtyInputs[0].connection.NodeA.EvaluateNode(false); //TODO: maybe selectively evaluate outputs. EvaluateNode() calculates all outputs (even when not connected).
 
-			invalidInputs = this.GetInvalidInputs();
+			dirtyInputs = this.GetDirtyInputs();
 		}
 
 		//Evaluate all outputs
-		for (let i = 0; i < this.outputs.length; i++) {
+		for (let i = 0; i < this.outputs.length; i++) { 
 			let nValue = this.GetValue(i);
 
 			this.outputs[i].value = nValue;

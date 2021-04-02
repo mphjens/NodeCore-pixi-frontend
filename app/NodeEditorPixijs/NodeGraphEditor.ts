@@ -9,6 +9,8 @@ import { RenderableNodeConnection } from "./EditorItems/RenderableNodeConnection
 import { AddNodeCommand } from "./Commands/AddNodeCommand";
 import { ConstantNumberNode } from "../NodeSystem/Nodes/ConstantNumberNode";
 import { RemoveEditorItemCommand } from "./Commands/RemoveItemCommand";
+import { WoodProductionNode } from "../NodeSystem/Nodes/WoodProductionNode";
+import { WoodenPlankProductionNode } from "../NodeSystem/Nodes/WoodProductionNode copy";
 
 //A container rendering a NodeCore.NodeGraph
 export class NodeGraphEditor extends Container {
@@ -29,8 +31,6 @@ export class NodeGraphEditor extends Container {
     public ctrlIsDown: boolean; //might be nice to not have these public
 
     public selection: GraphEditorItem[]; //This is altered by SelectItemCommand.ts, might be nicer to use methods instead of making this public.
-
-    public AvailableNodePrototypes: typeof INode[] = [];
 
     constructor(graph: NodeGraph) {
         super();
@@ -134,7 +134,10 @@ export class NodeGraphEditor extends Container {
                 }
                 break;
             case "KeyA":
-                this.FinishCommand(new AddNodeCommand(new ConstantNumberNode(2, this._Graph)));
+                this.FinishCommand(new AddNodeCommand(new WoodProductionNode(this._Graph)));
+                break;
+            case "KeyB":
+                this.FinishCommand(new AddNodeCommand(new WoodenPlankProductionNode(this._Graph)));
                 break;
             case "Delete":
                 this.FinishCommand(new RemoveEditorItemCommand(this.selection));
@@ -146,7 +149,7 @@ export class NodeGraphEditor extends Container {
                 items.forEach(item=>{
                     if(item instanceof RenderableNode)
                     {
-                        item._node.EvaluateNode();
+                        item._node.EvaluateNode(true);
                         console.log(`${item._node.getName()}[0]`, item._node.GetOutput(0).value);
                     }
                 });

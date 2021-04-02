@@ -1,9 +1,10 @@
-import { NodePortConfig } from "./NodePortConfig";
+import { NodePortConfig, NodeResourcePortConfig } from "./NodePortConfig";
 
 export enum InterfaceValueType{
 	number,
 	string,
-	boolean	
+	boolean,
+	resource
 }
 
 export enum PortType{
@@ -17,4 +18,9 @@ export class NodeConfig{
 	public Description: string = "Uninitialized";
 	public Inputs: NodePortConfig[] = [];
 	public Outputs: NodePortConfig[] = [];
+}
+
+export class ResourceProcessorConfig extends NodeConfig{
+	public Inputs: NodeResourcePortConfig[] = [];
+	public Outputs: NodeResourcePortConfig[] = [];
 }
